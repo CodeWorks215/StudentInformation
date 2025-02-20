@@ -14,4 +14,9 @@ public interface StudentRepository {
 
     @Select("select * from students_courses")
     List<StudentsCourses> searchStudentsCourses();
+
+    @Insert("INSERT INTO students(name, kana_Name, nickName,email,area,age,sex) "
+        + "VALUES(#{name}, #{kanaName}, #{nickName}, #{email}, #{area}, #{age}, #{sex})")
+    @Options(useGeneratedKeys = true, keyProperty = "id")
+    void registerStudent(Student student);
 }

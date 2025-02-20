@@ -8,10 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import raisetech.student.management.controller.converter.StudentConverter;
 import raisetech.student.management.data.Student;
 import raisetech.student.management.data.StudentsCourses;
+import raisetech.student.management.domain.StudentDetail;
 import raisetech.student.management.service.StudentService;
+import org.springframework.validation.BindingResult;
 
 import java.util.List;
 
@@ -34,11 +38,26 @@ public class StudentController {
 
         // convertStudentDetails メソッドに studentsCourses を渡す
         model.addAttribute("studentList", converter.convertStudentDetails(students, studentsCourses));
-        return "studentList";
+        return "studentList";//←テンプレートエンジンのStudentlist（HTMLの一番上のコード）
     }
 
     @GetMapping("/studentsCourseList")
     public List<StudentsCourses> getStudentsCourseList() {
         return service.searchStudentsCourseList();
+    }
+
+    @GetMapping("/newStudent")
+    public String newStudent(Model model) {
+        model.addAttribute("studentDetail", new StudentDetail());
+        return "registerStudent";
+    }
+
+    @PostMapping("/registerStudent")
+    public String registerStudent(@ModelAttribute StudentDetail studentDetail, BindingResult result) {
+        if(result.hasErrors()) {
+            return "registerStudent";
+    }
+    service.registerStudent(studentDetail);
+        return "redirect:/studentList";
     }
 }
