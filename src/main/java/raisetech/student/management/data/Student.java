@@ -1,4 +1,5 @@
 //データの構造が決まるクラス
+//つまりエンティティクラス
 
 package raisetech.student.management.data;
 
@@ -19,5 +20,4 @@ public class Student {
     private String sex;
     private String remark;
     private boolean isDeleted;
-
-}
+    }

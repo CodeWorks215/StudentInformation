@@ -1,12 +1,10 @@
-//　ユーザーからのリクエストを受け取り、
-//　そのリクエストに応じた処理を行うクラス。
-//　WEBアプリケーションでの動きが一番見えやすい。
-
 package raisetech.student.management.controller;
 
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,19 +12,15 @@ import raisetech.student.management.controller.converter.StudentConverter;
 import raisetech.student.management.data.Student;
 import raisetech.student.management.data.StudentsCourses;
 import raisetech.student.management.domain.StudentDetail;
-import raisetech.student.management.service.StudentService;
-import org.springframework.validation.BindingResult;
-
-import java.util.List;
 
 @Controller
 public class StudentController {
 
-    private StudentService service;
-    private StudentConverter converter;
+    private final raisetech.student.management.service.StudentService service;
+    private final StudentConverter converter;
 
     @Autowired
-    public StudentController(StudentService service, StudentConverter converter) {
+    public StudentController(raisetech.student.management.service.StudentService service, StudentConverter converter) {
         this.service = service;
         this.converter = converter;
     }
@@ -35,18 +29,17 @@ public class StudentController {
     public String getStudentList(Model model) {
         List<Student> students = service.searchStudentList();
         List<StudentsCourses> studentsCourses = service.searchStudentsCourseList();
-
-        // convertStudentDetails メソッドに studentsCourses を渡す
         model.addAttribute("studentList", converter.convertStudentDetails(students, studentsCourses));
-        return "studentList";//←テンプレートエンジンのStudentlist（HTMLの一番上のコード）
+        return "studentList";
     }
 
     @GetMapping("/studentsCourseList")
-    public List<StudentsCourses> getStudentsCourseList() {
-        return service.searchStudentsCourseList();
+    public String getStudentsCourseList(Model model) {
+        model.addAttribute("studentsCourses", service.searchStudentsCourseList());
+        return "studentsCourseList";
     }
 
-    @GetMapping("/newStudent")
+    @GetMapping("/newStudentsCourseList")
     public String newStudent(Model model) {
         model.addAttribute("studentDetail", new StudentDetail());
         return "registerStudent";
@@ -54,10 +47,10 @@ public class StudentController {
 
     @PostMapping("/registerStudent")
     public String registerStudent(@ModelAttribute StudentDetail studentDetail, BindingResult result) {
-        if(result.hasErrors()) {
+        if (result.hasErrors()) {
             return "registerStudent";
-    }
-    service.registerStudent(studentDetail);
+        }
+        service.registerStudent(studentDetail);
         return "redirect:/studentList";
     }
 }

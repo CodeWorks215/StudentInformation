@@ -1,8 +1,10 @@
+//データの構造が決まるクラス
+//つまりエンティティクラス
+
 package raisetech.student.management.data;
 
 import lombok.Getter;
 import lombok.Setter;
-
 import java.time.LocalDateTime;
 
 @Getter
@@ -15,3 +17,4 @@ public class StudentsCourses {
     private LocalDateTime courseStartAt;
     private LocalDateTime courseEndAt;
 }
+
